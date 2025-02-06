@@ -47,8 +47,6 @@ FEATURE_COLS = [
 ]
 
 
-
-
 # -------------------
 # REAL TIME FUNCTIONS
 # -------------------
@@ -65,6 +63,7 @@ def fetch_adjusted_df(ticker, start, end):
     df.rename(columns={"Close": "Adj Close"}, inplace=True)
     return df
 
+
 def realSignal(ticker, date):
     """
     Given a ticker and a date (string in 'YYYY-MM-DD' format), this function:
@@ -76,13 +75,15 @@ def realSignal(ticker, date):
       6. Scales the features and returns the model’s prediction.
     """
     return -1
+
+
 # ---------------------
 # BACKTESTING FUNCTIONS
 # ----------------------
 
 def signal(ticker, sector, df: pd.DataFrame, date_str):
     row = df[df["Date"] == date_str]
-    if row.empty: # If empty row, use yesterday (Shouldn't happen though)
+    if row.empty:  # If empty row, use yesterday (Shouldn't happen though)
         row = df.iloc[-1]
     X = row[FEATURE_COLS]
     if sector not in STOCK_SECTORS:
@@ -97,8 +98,6 @@ def signal(ticker, sector, df: pd.DataFrame, date_str):
     X_scaled = scaler.transform(X)
     pred = model.predict(X_scaled)[0]
     return pred
-
-
 
 
 def simulate(ticker, start, end):
@@ -189,13 +188,15 @@ def simulate(ticker, start, end):
 
     # Compute the profit percentage.
     profit_pct = ((cash - expenses) / expenses * 100) if expenses > 0 else 0
-    return profit_pct
+    return [expenses, cash, profit_pct]
 
-def backTest(tickers, start,end):
+
+def backTest(tickers, start, end):
     profit_pcts = {}
     for ticker in tickers:
         profit_pcts[ticker] = simulate(ticker, start, end)
     return profit_pcts
+
 
 if __name__ == "__main__":
     tickers = [
@@ -230,6 +231,11 @@ if __name__ == "__main__":
         "V",  # Visa
         "WMT",  # Walmart
     ]
-    results = backTest(tickers, datetime.datetime(2023, 1, 1), datetime.datetime(2023, 12, 31))
-    for ticker, profit in results.items():
-        print(f"{ticker}: {profit:.2f}")
+    results = backTest(tickers, datetime.datetime(2024, 1, 1), datetime.datetime(2024, 12, 31))
+    # Print header of the Markdown table
+    print("| **Ticker** | **Profit pct** | Cash | Expenses |")
+    print("| --- | --- | --- | --- |")
+
+    # Loop over each ticker and print its data in a table row.
+    for ticker, (expenses, cash, profit_pct) in results.items():
+        print("|", ticker, "|", round(profit_pct, 2), "% |", round(cash, 2), "|", round(expenses, 2), "|")

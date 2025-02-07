@@ -8,8 +8,8 @@ def load_csv(filename: str) -> pd.DataFrame:
     return pd.read_csv(filename)
 
 def process_data(df: pd.DataFrame) -> pd.DataFrame:
-    # Cleaning & Engineering (Make a separate dataframe per sector, store in data/DF/sector.joblib)
-    ''' Quantitative Metrics:
+    """
+    Quantitative Metrics:
     - PRICE:
         - % change in ADJUSTED closing
         - % change in 3 days
@@ -31,7 +31,7 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
         - 1 if Close tmrw > Close today (profit)
         - 0 if Close tmrw = Close today (Risk Tolerance)
         - -1 if Close tmrw < Close today
-    '''
+    """
     df = df.sort_values('Date').reset_index(drop=True)
 
     # % change in closing price

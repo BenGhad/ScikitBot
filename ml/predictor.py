@@ -1,11 +1,8 @@
 import os
-import sys
-import datetime
 import joblib
 import pandas as pd
 import yfinance as yf
 
-import ml
 import ml.data as data  # for process_data()
 import ml.trainer as trainer
 import datetime
@@ -45,7 +42,7 @@ FEATURE_COLS = [
     'RSI_14',
     'Momentum_10'
 ]
-
+sectors = joblib.load('data/ticker_info_cache.joblib')
 
 # -------------------
 # REAL TIME FUNCTIONS
@@ -74,7 +71,12 @@ def realSignal(ticker, date):
       5. Loads the trained model and scaler for that sector from the Models/ folder.
       6. Scales the features and returns the model’s prediction.
     """
-    return -1
+    start = date - datetime.timedelta(days=60)
+    df = fetch_adjusted_df(ticker, start, start)
+    df = data.process_data(df)
+    sector = trainer.get_ticker_sector(ticker, sectors)
+    df['Date'] = df['Date'].dt.strftime('%Y-%m-%d')
+    return signal(ticker, sector, df, date)
 
 
 # ---------------------
@@ -84,7 +86,7 @@ def realSignal(ticker, date):
 def signal(ticker, sector, df: pd.DataFrame, date_str):
     row = df[df["Date"] == date_str]
     if row.empty:  # If empty row, use yesterday (Shouldn't happen though)
-        row = df.iloc[-1]
+        row = df.iloc[[-1]]
     X = row[FEATURE_COLS]
     if sector not in STOCK_SECTORS:
         sector = "Unknown"
@@ -106,12 +108,12 @@ def simulate(ticker, start, end):
 
     Trading Rules:
       1) If already holding shares:
-         a) If the model prediction is +1 (positive), buy additional shares equal to:
+         a) If the model prediction is positive, buy additional shares equal to:
                 current_shares * (daily_pct_gain / 100)
             (e.g. a 20% gain means buying 20% more shares)
-         b) If the prediction is -1, sell all shares.
+         b) If the prediction is negative, sell all shares.
       2) If not holding shares:
-         a) If the prediction is +1, buy $1000 worth of shares.
+         a) If the prediction is positve, buy $1000 worth of shares.
          b) Otherwise, do nothing.
       3) If there isn’t enough cash to cover a purchase, “inject” the extra cash and add it to expenses.
 

@@ -183,7 +183,7 @@ def train_model(sector):
     # Train the model:
     myLittlePony.fit(X_train_scaled, y_train)
     print(f"[INFO]My Little {sector} has graduated from Celestia High in {myLittlePony.n_iter_} iterations!")
-
+    
     # Test eval:
     y_pred = myLittlePony.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)

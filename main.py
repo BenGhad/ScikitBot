@@ -1,134 +1,49 @@
-## Test 1
+def calculate_total_profit_percentage(data_str):
+    total_cash = 0.0
+    total_expenses = 0.0
 
-- **Starting Date:** Jan 1, 2023  
-- **Ending Date:** Dec 31, 2023 
-- **Date of Test:** February 2, 2025
+    # Split the input string into lines
+    lines = data_str.strip().split("\n")
 
-### Performance Table
-| **Ticker** | **Profit pct** | Cash | Expenses |
-| --- | --- | --- | --- |
-| MMM | 7.84 | 1534.55 | 1422.92 |
-| AXP | 12.6 | 4112.47 | 3652.19 |
-| AMGN | 9.3 | 1274.29 | 1165.88 |
-| AMZN | 23.49 | 5133.21 | 4156.78 |
-| AAPL | 15.44 | 4680.7 | 4054.71 |
-| BA | 6.51 | 1660.39 | 1558.86 |
-| CAT | 21.51 | 1905.8 | 1568.42 |
-| CVX | -10.71 | 1162.92 | 1302.41 |
-| CSCO | -1.88 | 2643.47 | 2694.13 |
-| KO | -0.16 | 1982.64 | 1985.85 |
-| DIS | -4.16 | 1255.61 | 1310.12 |
-| GS | 13.38 | 4074.3 | 3593.53 |
-| HD | 5.98 | 1337.77 | 1262.3 |
-| HON | 5.93 | 2690.17 | 2539.49 |
-| IBM | 20.68 | 3301.97 | 2736.25 |
-| JNJ | 0.95 | 1105.91 | 1095.46 |
-| JPM | 16.27 | 1595.87 | 1372.51 |
-| MCD | 9.66 | 2526.44 | 2303.93 |
-| MRK | 9.84 | 1174.22 | 1069.04 |
-| MSFT | 20.08 | 7268.79 | 6053.51 |
-| NKE | -0.13 | 1200.65 | 1202.21 |
-| NVDA | 19.27 | 41512.65 | 34804.62 |
-| PG | 0.85 | 2337.08 | 2317.38 |
-| CRM | 26.25 | 8572.71 | 6790.4 |
-| SHW | -1.88 | 1122.62 | 1144.09 |
-| TRV | 6.94 | 2973.53 | 2780.67 |
-| UNH | 19.9 | 1214.79 | 1013.15 |
-| VZ | 0.4 | 1806.83 | 1799.69 |
-| V | 11.3 | 2882.78 | 2590.13 |
-| WMT | 5.63 | 2585.35 | 2447.57 |
+    for line in lines:
+        # Remove any leading/trailing whitespace
+        line = line.strip()
 
+        # We only process lines that begin with a pipe and have actual data
+        if not line.startswith("|"):
+            continue
 
+        # Skip the header and the separator lines
+        if "Ticker" in line or set(line) <= {"|", "-", " "}:
+            continue
 
-## Test 2
+        # The markdown table uses '|' as delimiter.
+        # Splitting yields an empty string at the beginning and end.
+        parts = [part.strip() for part in line.split("|") if part.strip()]
 
-- **Starting Date:** Jan 1, 2024  
-- **Ending Date:** Dec 31, 2024  
-- **Date of Test:** February 2, 2025
+        # We expect four columns: Ticker, Profit pct, Cash, Expenses
+        if len(parts) != 4:
+            continue
 
-### Performance Table
-| **Ticker** | **Profit pct** | Cash | Expenses |
-| --- | --- | --- | --- |
-| MMM | 54.9 % | 1745.29 | 1126.72 |
-| AXP | 27.26 % | 4773.5 | 3751.02 |
-| AMGN | -10.63 % | 1066.54 | 1193.39 |
-| AMZN | 11.54 % | 1420.24 | 1273.27 |
-| AAPL | 21.48 % | 5269.82 | 4337.97 |
-| BA | -15.47 % | 1352.46 | 1599.93 |
-| CAT | 4.03 % | 4675.61 | 4494.52 |
-| CVX | -8.35 % | 1170.62 | 1277.25 |
-| CSCO | 11.95 % | 1812.93 | 1619.39 |
-| KO | 1.59 % | 2278.16 | 2242.55 |
-| DIS | 4.82 % | 1284.61 | 1225.51 |
-| GS | 20.05 % | 6855.17 | 5710.04 |
-| HD | 2.84 % | 1110.06 | 1079.44 |
-| HON | 13.01 % | 2847.09 | 2519.3 |
-| IBM | 13.48 % | 4110.5 | 3622.08 |
-| JNJ | -7.05 % | 1000.0 | 1075.8 |
-| JPM | 28.7 % | 2749.95 | 2136.77 |
-| MCD | 2.63 % | 1467.69 | 1430.04 |
-| MRK | -1.11 % | 1063.44 | 1075.35 |
-| MSFT | 2.82 % | 3304.06 | 3213.33 |
-| NKE | 3.51 % | 1124.81 | 1086.67 |
-| NVDA | 10.59 % | 60580.85 | 54781.41 |
-| PG | 4.84 % | 2453.39 | 2340.16 |
-| CRM | 10.96 % | 4593.09 | 4139.3 |
-| SHW | 6.74 % | 1189.2 | 1114.06 |
-| TRV | 12.91 % | 3287.68 | 2911.73 |
-| UNH | -3.72 % | 1107.87 | 1150.72 |
-| VZ | 0.19 % | 1614.6 | 1611.57 |
-| V | 13.01 % | 3052.64 | 2701.28 |
-| WMT | 30.99 % | 5534.31 | 4225.13 |
+        try:
+            cash = float(parts[2])
+            expenses = float(parts[3])
+        except ValueError:
+            # Skip rows where conversion fails.
+            continue
 
-## Test 3
+        total_cash += cash
+        total_expenses += expenses
 
-- **Starting Date:** Jan 1, 2024  
-- **Ending Date:** Dec 31, 2024  
-- **Date of Test:** February 7, 2025
-- **Note:** Made the algorithm more aggressive, mixed performance shifts, but both share an average return of 9%
+    if total_expenses == 0:
+        return "Error: Total expenses is zero. Cannot compute profit percentage."
 
-| **Ticker** | **Profit pct** | Cash | Expenses |
-| --- | --- | --- | --- |
-| MMM | 28.27 % | 35501.16 | 27677.11 |
-| AXP | 24.25 % | 137922.1 | 111000.0 |
-| AMGN | 1.54 % | 15686.58 | 15448.8 |
-| AMZN | 3.57 % | 11392.64 | 11000.0 |
-| AAPL | 22.59 % | 166717.26 | 136000.0 |
-| BA | -11.92 % | 17032.19 | 19337.05 |
-| CAT | 3.59 % | 124164.49 | 119863.9 |
-| CVX | -1.67 % | 17863.59 | 18166.23 |
-| CSCO | 9.51 % | 73374.48 | 67000.0 |
-| KO | -1.24 % | 119498.1 | 121000.0 |
-| DIS | -1.02 % | 11484.19 | 11602.48 |
-| GS | 23.83 % | 157266.67 | 127000.0 |
-| HD | 7.0 % | 11770.31 | 11000.0 |
-| HON | 14.29 % | 123434.69 | 108000.0 |
-| IBM | 16.26 % | 153469.14 | 132000.0 |
-| JNJ | 2.59 % | 11067.04 | 10787.56 |
-| JPM | 20.38 % | 94142.42 | 78203.18 |
-| MCD | -3.16 % | 45529.52 | 47013.85 |
-| MRK | -0.22 % | 16444.05 | 16481.04 |
-| MSFT | 1.73 % | 126145.9 | 124000.0 |
-| NKE | 6.6 % | 10658.34 | 9998.73 |
-| NVDA | 28.38 % | 160480.59 | 125000.0 |
-| PG | 2.69 % | 128358.07 | 125000.0 |
-| CRM | 8.18 % | 91088.52 | 84198.98 |
-| SHW | -1.02 % | 12866.96 | 13000.0 |
-| TRV | 14.92 % | 129854.38 | 113000.0 |
-| UNH | 2.42 % | 6141.34 | 5996.03 |
-| VZ | -2.99 % | 57233.19 | 59000.0 |
-| V | 13.63 % | 153396.52 | 135000.0 |
-| WMT | 30.37 % | 174691.32 | 134000.0 |
+    overall_profit_pct = (total_cash - total_expenses) / total_expenses * 100
+    return f"Total Profit Percentage: {overall_profit_pct:.2f}%"
 
 
-## Test 4
-
-- **Starting Date:**  Jan 1, 2024
-- **Ending Date:** Dec 31, 2024
-- **Date of Test:** Feb 7, 2025
-- **Note:** Same stocks as S&P, which profited 23%.
-- **Profit:** 9.52%
-
+# Example input string (the user will provide this)
+data_str = """
 | **Ticker** | **Profit pct** | Cash | Expenses |
 | --- | --- | --- | --- |
 | MMM | 54.9 % | 1745.29 | 1126.72 |
@@ -627,3 +542,6 @@
 | ZBRA | 17.73 % | 4872.76 | 4138.96 |
 | ZBH | -5.62 % | 1281.11 | 1357.39 |
 | ZTS | -15.99 % | 1181.55 | 1406.48 |
+"""
+
+print(calculate_total_profit_percentage(data_str))
